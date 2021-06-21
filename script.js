@@ -22,31 +22,46 @@ function addStudentToTable(index, student) {
 	cell.innerHTML = `${student.name} ${student.surname}`
 	row.appendChild(cell)
 	cell = document.createElement('td')
-	//cell.innerHTML = student.username
 	let img = document.createElement('img')
 	img.setAttribute('src', student.image)
     img.height = 200
-    // img.classList.add('img-thumbnail')
 	cell.appendChild(img)
 	row.appendChild(cell)
 	cell = document.createElement('td')
 	cell.innerHTML = student.gender
 	row.appendChild(cell)
 
-	cell = document.createElement('td')
-	let button = document.createElement('button')
-	button.classList.add('btn')
-	button.classList.add('btn-danger')
-	button.setAttribute('type', 'button')
-	button.innerText = 'delete'
-	button.addEventListener('click', (event) => { 
+    cell = document.createElement('td')
+    let buttonEdit = document.createElement('button')
+    buttonEdit.classList.add('btn')
+    buttonEdit.classList.add('btn-primary')
+    buttonEdit.setAttribute('type', 'button')
+	buttonEdit.innerText = 'Edit'
+    buttonEdit.addEventListener('click', (event) => { 
 
-		let confirmMsg = confirm(`ท่านต้องการลบคุณ ${student.name} หรือไม่`)
+		let confirmMsg = confirm(`ต้องการแก้ไขข้อมูลคุณ ${student.name} หรือไม่`)
+		if (confirmMsg) {
+			editStudent(student.id)
+		}
+	})
+    cell.appendChild(buttonEdit)
+    row.appendChild(cell)
+
+
+	cell = document.createElement('td')
+	let buttonDelete = document.createElement('button')
+	buttonDelete.classList.add('btn')
+	buttonDelete.classList.add('btn-danger')
+	buttonDelete.setAttribute('type', 'button')
+	buttonDelete.innerText = 'delete'
+	buttonDelete.addEventListener('click', (event) => { 
+
+		let confirmMsg = confirm(`ต้องการลบคุณ ${student.name} หรือไม่`)
 		if (confirmMsg) {
 			deleteStudent(student.id)
 		}
 	})
-	cell.appendChild(button)
+	cell.appendChild(buttonDelete)
 	row.appendChild(cell)
 	tableBody.appendChild(row)
 
@@ -99,10 +114,10 @@ function deleteStudent(id) {
             throw Error(response.statusText)
         }
     }).then(data => {
-        alert(`student name ${data.name} is now deleted`)
+        alert(`student name ${data.name} is  deleted now`)
 		showAllStudents()
     }).catch((error) => {
-        alert('your input student id is not in the database')
+        alert('your student id is not in the database')
     })
 }
 
@@ -129,7 +144,6 @@ function onAddStudentClick() {
 	student.gpa = document.getElementById('gpaInput').value
 	student.image = document.getElementById('imageLinkInput').value
 	addStudentToDB(student)
-
 }
 
 document.getElementById('addButton').addEventListener('click',(event) => {
@@ -146,33 +160,8 @@ function showAllStudents() {
 }
 
 function onLoad() {
-	// showAllStudents()
 	hideAll()
-
-
-	// fetch('https://dv-student-backend-2019.appspot.com/student')
-	// .then((response) => {
-	// 	return response.json()
-	// }).then(data => {
-	// 	addStudentData(data)
-	// })
 }
-
-// function onLoad() {
-//     student = {
-//         name: "Bantita",
-//         surname: "Boonyadate",
-//         studentId: "632110343",
-//         gpa: "3.50",
-//         image: "https://mpics.mgronline.com/pics/Images/561000012797202.JPEG"
-//     }
-//     addStudentToDB(student)
-// }
-
-// function onLoad() {
-//     deleteStudent(46)
-// }
-
 var singleStudentResult = document.getElementById('sinigle_student_result')
 var listStudentResult = document.getElementById('output')
 var addUserDetail = document.getElementById('addUserDetail')
@@ -194,6 +183,3 @@ document.getElementById('addStudentMenu').addEventListener('click', (event) => {
 	addUserDetail.style.display = 'block'
 })
 
-document.getElementById('editButton').addEventListener('click', (event) => {
-
-})
