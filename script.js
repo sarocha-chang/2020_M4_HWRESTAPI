@@ -20,6 +20,7 @@ function addStudentToTable(index, student) {
 	row.appendChild(cell)
 	cell = document.createElement('td')
 	cell.innerHTML = `${student.name} ${student.surname}`
+	
 	row.appendChild(cell)
 	cell = document.createElement('td')
 	let img = document.createElement('img')
@@ -39,9 +40,13 @@ function addStudentToTable(index, student) {
 	buttonEdit.innerText = 'Edit'
     buttonEdit.addEventListener('click', (event) => { 
 
-		let confirmMsg = confirm(`ต้องการแก้ไขข้อมูลคุณ ${student.name} หรือไม่`)
+		let confirmMsg = confirm(`ต้องการแก้ไขข้อมูลของ ${student.name} หรือไม่`)
 		if (confirmMsg) {
-			editStudent(student.id)
+			hideAll()
+			editUserDetail.style.display='block'	
+			document.getElementById('editButton').addEventListener('click',function(){ // get ค่า หลังกด update
+				updateStudent(student)			
+			})	
 		}
 	})
     cell.appendChild(buttonEdit)
@@ -56,7 +61,7 @@ function addStudentToTable(index, student) {
 	buttonDelete.innerText = 'delete'
 	buttonDelete.addEventListener('click', (event) => { 
 
-		let confirmMsg = confirm(`ต้องการลบคุณ ${student.name} หรือไม่`)
+		let confirmMsg = confirm(`ต้องการลบข้อมูลของ ${student.name} หรือไม่`)
 		if (confirmMsg) {
 			deleteStudent(student.id)
 		}
@@ -78,7 +83,7 @@ function addStudentToDB(student) {
     }) .then((response) => {
         return response.json()
     }).then(data => {
-        // console.log('success',data)
+		alert('Add student finish')
 		showAllStudents()
     })
 }
@@ -104,6 +109,7 @@ function addStudentList(studentList)  {
     }
 }
 
+//ลบข้อมูล
 function deleteStudent(id) {
     fetch(`https://dv-student-backend-2019.appspot.com/student/${id}`, {
         method: 'DELETE'
@@ -121,20 +127,43 @@ function deleteStudent(id) {
     })
 }
 
-function editStudent(student) {
-	fetch('https://dv-student-backend-2019.appspot.com/students', {
-	method: 'POST',
-	headers: {
-		'Content-Type': 'application/json'
-	},
-	body:JSON.stringify(student)
-}) .then((response) => {
-	return response.json()
-}).then(data => {
-	// console.log('success',data)
-	showAllStudents()
-})
+//อัพเดทข้อมูลจากที่ edit
+
+
+function editStudent(student){
+	let studentEdit = {}
+	studentEdit.id = student.id
+	studentEdit.name = document.getElementById('nameEdit').value
+	studentEdit.surname = document.getElementById('surnameEdit').value
+	studentEdit.studentId = document.getElementById('studentIdEdit').value
+	studentEdit.gpa = document.getElementById('gpaEdit').value
+	studentEdit.image = document.getElementById('imageLinkEdit').value
+return studentEdit
 }
+
+
+function updateStudent(student) {
+    fetch('https://dv-student-backend-2019.appspot.com/students',{
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body:JSON.stringify(editStudent(student))
+    }).then(response =>{
+        if(response.status === 200){
+            return response.json()
+        }else{
+            throw Error(response.statusText)
+        }
+    }).then(data=>{
+        alert('Update successed')
+    }).catch(error=>{
+        alert('Cannot update')
+    })
+}
+// จบเรื่อง edit
+
+
 
 function onAddStudentClick() {
 	let student = {}
@@ -162,14 +191,17 @@ function showAllStudents() {
 function onLoad() {
 	hideAll()
 }
+
 var singleStudentResult = document.getElementById('sinigle_student_result')
 var listStudentResult = document.getElementById('output')
 var addUserDetail = document.getElementById('addUserDetail')
+var editUserDetail = document.getElementById('editUserDetail')
 
 function hideAll() {
 	singleStudentResult.style.display = 'none'
 	listStudentResult.style.display = 'none'
 	addUserDetail.style.display = 'none'
+	editUserDetail.style.display='none'
 }
 
 document.getElementById('allStudentMenu').addEventListener('click', (event) => {
