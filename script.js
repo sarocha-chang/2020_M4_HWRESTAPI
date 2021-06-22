@@ -20,7 +20,21 @@ function addStudentToTable(index, student) {
 	row.appendChild(cell)
 	cell = document.createElement('td')
 	cell.innerHTML = `${student.name} ${student.surname}`
-	
+	cell.setAttribute('id',`hide${student.id}`)
+	cell.addEventListener('dblclick',(event)=>{
+		document.getElementById(`hide${student.id}`).classList.toggle("x")
+        x = document.getElementById(`hide${student.id}`)
+        if(x.classList.contains("x")){
+             y = document.getElementById(`hide${student.id}`).innerHTML = `${student.name} ${student.surname}
+            <br>
+           ID : ${student.id}<br>
+           Student ID : ${student.studentId}<br>
+           GPA : ${student.gpa}
+           `
+        }else {
+             y = document.getElementById(`hide${student.id}`).innerHTML = `${student.name} ${student.surname}`
+        }
+	})
 	row.appendChild(cell)
 	cell = document.createElement('td')
 	let img = document.createElement('img')
